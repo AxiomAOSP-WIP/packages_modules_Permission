@@ -39,7 +39,16 @@ object PermissionUsageControlPreferenceUtils {
     private val SENSOR_DATA_PERMISSIONS: List<String> = listOf(
         Manifest.permission_group.LOCATION,
         Manifest.permission_group.CAMERA,
-        Manifest.permission_group.MICROPHONE
+        Manifest.permission_group.MICROPHONE,
+        Manifest.permission_group.SENSORS,
+        Manifest.permission_group.CALENDAR,
+        Manifest.permission_group.CALL_LOG,
+        Manifest.permission_group.CONTACTS,
+        Manifest.permission_group.STORAGE,
+        Manifest.permission_group.NEARBY_DEVICES,
+        Manifest.permission_group.PHONE,
+        Manifest.permission_group.ACTIVITY_RECOGNITION,
+        Manifest.permission_group.SMS
     )
 
     @JvmStatic
@@ -60,10 +69,17 @@ object PermissionUsageControlPreferenceUtils {
                 R.string.permission_usage_preference_label, count)
             if (count == 0) {
                 isEnabled = false
-                val permissionUsageSummaryNotUsed = if (show7Days) {
-                    R.string.permission_usage_preference_summary_not_used_7d
+                val permissionUsageSummaryNotUsed = if (
+                        groupName == Manifest.permission_group.NETWORK
+                        || groupName == Manifest.permission_group.OTHER_SENSORS)
+                {
+                    R.string.permission_usage_preference_summary_not_supported
                 } else {
-                    R.string.permission_usage_preference_summary_not_used_24h
+                    if (show7Days) {
+                        R.string.permission_usage_preference_summary_not_used_7d
+                    } else {
+                        R.string.permission_usage_preference_summary_not_used_24h
+                    }
                 }
                 setSummary(permissionUsageSummaryNotUsed)
             } else if (SENSOR_DATA_PERMISSIONS.contains(groupName)) {
@@ -98,7 +114,7 @@ object PermissionUsageControlPreferenceUtils {
             Manifest.permission_group.MICROPHONE -> {
                 PERMISSION_USAGE_FRAGMENT_INTERACTION__ACTION__MICROPHONE_ACCESS_TIMELINE_VIEWED
             }
-            else -> 0
+            else -> return
         }
         PermissionControllerStatsLog.write(PERMISSION_USAGE_FRAGMENT_INTERACTION, sessionId, act)
     }
